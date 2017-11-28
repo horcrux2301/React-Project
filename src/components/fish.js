@@ -8,7 +8,7 @@ class Fish extends React.Component{
 		const buttonText = isAvailable ? 'Add to Order' : 'sold out';
 		return(
 			<li className="menu-fish">
-				<img src={details.image} />
+				<img src={details.image} alt={details.desc}/>
 				{details.name}
 				<h3 className="fish-name">
 					{details.name}
