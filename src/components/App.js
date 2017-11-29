@@ -7,6 +7,12 @@ import Fish from './Fish';
 import base from '../base';
 class App extends React.Component{
 
+
+	state={
+			fishes: {},
+			order: {},
+		};
+
 	constructor(){
 		super();
 		// getting initial state.
@@ -16,10 +22,6 @@ class App extends React.Component{
 		this.updatefish = this.updatefish.bind(this);
 		this.removefish = this.removefish.bind(this);
 		this.removeFromOrder = this.removeFromOrder.bind(this);
-		this.state={
-			fishes: {},
-			order: {},
-		};
 	}
 
 	componentWillMount(){
