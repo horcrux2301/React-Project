@@ -3,7 +3,7 @@ import Header from './Header';
 import Inventory from './Inventory';
 import Order from './Order';
 import SampleFishes from '../sample-fishes.js';
-import Fish from './Fish';
+import fish from './fish';
 import base from '../base';
 class App extends React.Component{
 
