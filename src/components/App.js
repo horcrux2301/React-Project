@@ -119,11 +119,17 @@ class App extends React.Component{
 					addFish={this.addFish} 
 					loadSamples={this.loadSamples} 
 					fishes={this.state.fishes}
+					storeId = {this.props.params.storeId} 
 				/>
 			</div>
 		)
 	}
 }
+
+App.propTypes = {
+	params: React.PropTypes.object.isRequired
+}
+
  
 export default App;
 

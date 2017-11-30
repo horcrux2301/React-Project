@@ -1,5 +1,6 @@
 import React from 'react';
 import AddFishForm from './AddFishForm';
+import base from '../base';
 
 class Inventory extends React.Component{
 
@@ -7,6 +8,13 @@ class Inventory extends React.Component{
 		super();
 		this.renderInventory = this.renderInventory.bind(this);
 		this.handleChange = this.handleChange.bind(this);
+		this.renderlogin = this.renderlogin.bind(this);
+		this.authenticate = this.authenticate.bind(this);
+		this.authHandler = this.authHandler.bind(this);
+		this.state={
+			uid: null,
+			owner : null
+		}
 	}
 
 	handleChange(e,key){
@@ -40,9 +48,65 @@ class Inventory extends React.Component{
 		)
 	}
 
-	render(){
+	authenticate(provider){
+		console.log(`Trying to log in with ${provider}`);
+		base.authWithOAuthPopup(provider, this.authHandler);
+	}
+
+	authHandler(err,authData){
+		if(err){
+			console.error(err);
+			return;
+		}
+
+		const storeRef = base.database().ref(this.props.storeId);
+
+		// query the firebase once
+
+		storeRef.once('value',(snapshot) => {
+			const data = snapshot.val() || {};
+			if(!data.owner){
+				storeRef.set({
+					owner: authData.user.uid
+				});
+			}
+		});
+
+	}
+
+	renderlogin(){
 		return(
 			<div>
+				<h2>Inventory</h2>
+				<p>Sign in.!</p>
+				<button className="facebook" onClick={() => (this.authenticate('facebook'))}>Log in with Facebook.</button>
+			</div>
+		)
+	}
+
+	render(){
+		const logout = <button>Log Out.!</button>
+		// check if they are not logged in
+		if(!this.state.uid){
+			return(
+				<div>{this.renderlogin()}</div>
+			)
+		}
+
+		// check if they are the owner
+		if(this.state.uid!==this.state.owner){
+			return(
+				<div>
+					<p>Sorry You are not the owner of this store.</p>
+					{logout}
+				</div>
+			)
+		}
+
+
+		return(
+			<div>
+				{logout}
 				{Object.keys(this.props.fishes).map(this.renderInventory)}
 				<h2>Inventory</h2>
 				<AddFishForm addFish={this.props.addFish}/>
@@ -52,5 +116,16 @@ class Inventory extends React.Component{
 		)
 	}
 }
+
+Inventory.PropTypes = {
+	addFish : React.PropTypes.func.isRequired,
+	fishes : React.PropTypes.object.isRequired,
+	loadSamples : React.PropTypes.func.isRequired,
+	removefish : React.PropTypes.func.isRequired,
+	updatedfish : React.PropTypes.func.isRequired,
+	storeId : React.PropTypes.string.isRequired,
+}
+
+
 
 export default Inventory;
